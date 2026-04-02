@@ -1,0 +1,24 @@
+{
+  "name": "euge-erg/translate",
+  "description": "Text translation using multiple neural network APIs",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "EugeneErg\\Translate\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^8.2",
+    "firebase/php-jwt": "^6.11",
+    "psr/http-client": "^1.0",
+    "psr/http-factory": "^1.0",
+    "psr/http-message": "^1.0 || ^2.0",
+    "ext-intl": "*",
+    "eugene-erg/icu-message-format-parser": "^1.0"
+  },
+  "minimum-stability": "stable",
+  "require-dev": {
+    "guzzlehttp/guzzle": "^7.9"
+  }
+}

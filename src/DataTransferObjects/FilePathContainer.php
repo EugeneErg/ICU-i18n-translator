@@ -1,0 +1,18 @@
+<?php
+
+declare(strict_types = 1);
+
+namespace EugeneErg\Translate\DataTransferObjects;
+
+use EugeneErg\ICUMessageFormatParser\DataTransferObjects\Types;
+
+final readonly class FilePathContainer
+{
+    /**
+     * @param array<self|Types|string> $children
+     */
+    public function __construct(
+        public array $children = [],
+    ) {
+    }
+}
