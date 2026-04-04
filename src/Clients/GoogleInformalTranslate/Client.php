@@ -60,8 +60,8 @@ readonly class Client
                 unidentifiedField5: $translate[5] ?? null,
                 unidentifiedField6: $translate[6] ?? null,
                 unidentifiedField7: isset($translate[7]) ? array_map(static fn (array $unidentifiedField7) => new UnidentifiedField7(
-                    unidentifiedField0: $unidentifiedField7[0],
-                    unidentifiedField1: $unidentifiedField7[1],
+                    unidentifiedField0: $unidentifiedField7[0] ?? null,
+                    unidentifiedField1: $unidentifiedField7[1] ?? null,
                 ), $translate[7]) : null,
                 models: isset($translate[8]) ? array_map(static fn (array $models) => array_map(static fn (array $model) => new Model(
                     hash: $model[0],

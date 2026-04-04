@@ -4,96 +4,113 @@ declare(strict_types = 1);
 
 namespace EugeneErg\Translate\Translators\GoogleInformalTranslate;
 
+use EugeneErg\ICUMessageFormatParser\Parser;
 use EugeneErg\Translate\Clients\GoogleInformalTranslate\Client;
 use EugeneErg\Translate\Clients\GoogleInformalTranslate\ValueObjects\GoogleTranslateType;
+use EugeneErg\Translate\DataTransferObjects\Variable;
 use EugeneErg\Translate\Translators\Contracts\TranslatorInterface;
-use EugeneErg\Translate\Translators\Contracts\TransliterationLanguageTranslatorInterface;
 use EugeneErg\Translate\Translators;
+use EugeneErg\Translate\ValueObjects\Translated;
+use MessageFormatter;
 
-readonly class GoogleInformalTranslator implements
-    TranslatorInterface,
-    TransliterationLanguageTranslatorInterface
+readonly class GoogleInformalTranslator implements TranslatorInterface
 {
-    public function __construct(private Client $client)
+    public function __construct(private Client $client, private Parser $parser)
     {
     }
 
-    public function translate(array $pattern, string $fromLocale, string $toLocale, ?string $context = null,): array
-    {
-        // TODO: Implement translate() method.
-    }
-
-    public function translate2(
-        string  $pattern,
-        string  $fromLocale,
-        string  $toLocale,
-        array   $values = [],
+    /**
+     * @param array<string|Variable> $pattern
+     *
+     * @return array<string|Variable>
+     */
+    public function translate(
+        array $pattern,
+        string $fromLocale,
+        string $toLocale,
         ?string $context = null,
-    ): string {
-        $replace = [];
-
-        foreach ($values as $number => $variable) {
-            $replace["{{{$variable}}}"] = "{{_{$number}_}}";
-        }
-
+    ): array {
         $result = $this->client->single(
-            text: $pattern,
-            targetLanguage: $toLocale,
+            text: $this->patternToText($pattern),
+            targetLanguage: $this->localeToLanguage($toLocale),
             types: [GoogleTranslateType::Translation],
-            sourceLanguage: $fromLocale,
+            sourceLanguage: $this->localeToLanguage($fromLocale),
         );
 
-        return str_replace(array_values($replace), array_keys($replace), $result[0]->text);
+        return $this->parseString($result->translates[0]->translatedText);
     }
 
     public function translateWithDetect(
-        string $template,
-        string $toLanguage,
-        array $variables = [],
+        array $pattern,
+        string $toLocale,
         ?string $context = null,
-    ): Translation {
-        $replace = [];
-
-        foreach ($variables as $number => $variable) {
-            $replace['{{' . $variable . '}}'] = "{{_{$number}_}}";
-        }
-
+    ): Translated {
         $result = $this->client->single(
-            text: $template,
-            targetLanguage: $toLanguage,
+            text: $this->patternToText($pattern),
+            targetLanguage: $this->localeToLanguage($toLocale),
             types: [GoogleTranslateType::Translation],
         );
 
-        return new Translation(
-            $result->detectedSourceLanguage,
-            str_replace(array_values($replace), array_keys($replace), $result[0]->text),
+        return new Translated(
+            locale: $result->detectedSourceLanguage,
+            pattern: $this->parseString($result->translates[0]->translatedText),
         );
-    }
-
-    public function getTargetLanguages(): array
-    {
-        return array_keys($this->client->getSupportedLanguages()->languages);
-    }
-
-    public function romanization(string $fromLanguage, string $value): string
-    {
-        $result = $this->client->single(
-            text: $value,
-            targetLanguage: 'en',
-            types: [GoogleTranslateType::Romanization],
-            sourceLanguage: $fromLanguage,
-        );
-
-        return $result->translates[0]->translatedText;
-    }
-
-    public function getTransliterationLanguages(): array
-    {
-        return $this->getTargetLanguages();
     }
 
     public function canTranslate(string $toLocale, ?string $fromLocale = null): bool
     {
-        // TODO: Implement canTranslate() method.
+        //todo cache $this->client->getSupportedLanguages()
+        $fromLanguage = $fromLocale === null ? null : $this->localeToLanguage($fromLocale);
+        $toLanguage = $this->localeToLanguage($toLocale);
+        $fromCheck = $fromLanguage === null;
+        $toCheck = false;
+
+        foreach ($this->client->getSupportedLanguages()->languages as $language => $options) {
+            $fromCheck = $fromCheck || ($language === $fromLanguage && $options->source);
+            $toCheck = $toCheck || ($language === $toLanguage && $options->target);
+
+            if ($fromCheck && $toCheck) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function parseString(string $text): array
+    {
+        $result = [];
+        $parts = preg_split('{(\{\{_\d+_\}\})}', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+        foreach ($parts as $part) {
+            if ($part !== '') {
+                $result[] = preg_match('{^\{\{_(\d+)_\}\}$}', $part, $matches)
+                    ? new Variable((int)$matches[1])
+                    : MessageFormatter::formatMessage('EN', $part, []);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array<Variable|string> $pattern
+     */
+    private function patternToText(array $pattern): string
+    {
+        $result = '';
+
+        foreach ($pattern as $value) {
+            $result .= $value instanceof Variable ? "{{_{$value->value}_}}" : $this->parser->quote($value);
+        }
+
+        return $result;
+    }
+
+    private function localeToLanguage(string $locale): string
+    {
+        $countyLanguage = explode('_', $locale, 2);
+
+        return $countyLanguage[1] ?? strtolower($locale);
     }
 }

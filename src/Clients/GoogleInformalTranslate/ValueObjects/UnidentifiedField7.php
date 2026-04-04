@@ -8,7 +8,7 @@ final readonly class UnidentifiedField7
 {
     public function __construct(
         public mixed $unidentifiedField0,
-        public string $unidentifiedField1,
+        public ?string $unidentifiedField1,
     ) {
     }
 }
