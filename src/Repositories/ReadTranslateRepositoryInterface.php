@@ -23,5 +23,5 @@ interface ReadTranslateRepositoryInterface
      *
      * @return array<string, Translate>
      */
-    public function keysListByKey(array $keys): array;
+    public function keysListByKey(GroupId $groupId, string $locale, array $keys): array;
 }

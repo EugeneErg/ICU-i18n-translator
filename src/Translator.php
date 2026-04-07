@@ -433,7 +433,7 @@ readonly class Translator
         $needKeys = array_diff(array_keys($cases->types), array_keys($result));
         $sources = $needKeys === []
             ? []
-            : $this->readTranslateRepository->keysListByKey($needKeys);
+            : $this->readTranslateRepository->keysListByKey($group->id, $group->locale, $needKeys);
 
         foreach ($cases->types as $key => $variant) {
             if (!isset($result[$key])) {
