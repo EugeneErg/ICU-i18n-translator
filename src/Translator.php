@@ -58,6 +58,8 @@ readonly class Translator
 
     /**
      * @description переводит пользовательский текст
+     *
+     * @throws TranslateException
      */
     public function translateText(
         string $text,
@@ -111,7 +113,7 @@ readonly class Translator
         $group = $this->readGroupRepository->findByPattern(originalPattern: $groupOriginalPattern, context: $context, locale: $fromLocale);
         //если группа найдена, а исходный язык не задан, берем из группы
         $fromLocale ??= $group->locale ?? null;
-        $variant = $cases->variants[$key];
+        $variant = $cases->types[$key];
         $variantPattern = (string) $variant;
 
         //если исходный язык неизвестен, значит и группа не найдена
@@ -137,14 +139,14 @@ readonly class Translator
             $originalGroupTranslateIsEmpty = true;
         } elseif ($group !== null) {
             //если исходный язык задан и есть группа, то возможно есть и перевод
-            $result = $this->readTranslateRepository->findByGroup(groupId: $group->id, locale: $toLocale);
+            $result = $this->readTranslateRepository->findByGroup(groupId: $group->id, key: $key, locale: $toLocale);
 
             if ($result !== null) {
                 // если перевод есть, возвращаем его
                 return $this->messageFormat(locale: $toLocale, pattern: $result->pattern, values: $values);
             }
 
-            $sourceTranslate = $this->readTranslateRepository->findByGroup(groupId: $group->id, locale: $fromLocale);
+            $sourceTranslate = $this->readTranslateRepository->findByGroup(groupId: $group->id, key: $key, locale: $fromLocale);
             $originalGroupTranslateIsEmpty = $sourceTranslate === null;
         } else {
             $originalGroupTranslateIsEmpty = true;
@@ -179,6 +181,9 @@ readonly class Translator
         return $this->messageFormat($toLocale, $translate->pattern, $values);
     }
 
+    /**
+     * @throws TranslateException
+     */
     public function addFile(string $format, string $name, string $content, string $locale, string $context = null): void
     {
         if (!isset($this->formatters[$format])) {
@@ -425,12 +430,12 @@ readonly class Translator
 
         $cases = $this->variator->typesToCases($types);
         $result = $this->readTranslateRepository->groupListByKey($group->id, $locale);
-        $needKeys = array_diff(array_keys($cases->variants), array_keys($result));
+        $needKeys = array_diff(array_keys($cases->types), array_keys($result));
         $sources = $needKeys === []
             ? []
             : $this->readTranslateRepository->keysListByKey($needKeys);
 
-        foreach ($cases->variants as $key => $variant) {
+        foreach ($cases->types as $key => $variant) {
             if (!isset($result[$key])) {
                 if (isset($sources[$key])) {
                     $source = $sources[$key];
@@ -460,7 +465,7 @@ readonly class Translator
         }
 
         return $this->variator->casesToTypes(new Cases(
-            variants: $translateVariants,
+            types: $translateVariants,
             variator: $cases->variator,
         ));
     }

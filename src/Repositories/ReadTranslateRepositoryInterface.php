@@ -11,7 +11,7 @@ interface ReadTranslateRepositoryInterface
 {
     public function find(string $pattern, ?string $locale = null): ?Translate;
 
-    public function findByGroup(GroupId $groupId, string $locale): ?Translate;
+    public function findByGroup(GroupId $groupId, string $key, string $locale): ?Translate;
 
     /**
      * @return array<string, Translate>
