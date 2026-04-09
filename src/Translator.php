@@ -18,7 +18,6 @@ use EugeneErg\Translate\Formatters\FormatterInterface;
 use EugeneErg\Translate\Repositories\ReadGroupRepositoryInterface;
 use EugeneErg\Translate\Repositories\ReadPathRepositoryInterface;
 use EugeneErg\Translate\Repositories\ReadTranslateRepositoryInterface;
-use EugeneErg\Translate\Repositories\TransactionManagerInterface;
 use EugeneErg\Translate\Repositories\WriteGroupRepositoryInterface;
 use EugeneErg\Translate\Repositories\WriteGroupTranslateRepositoryInterface;
 use EugeneErg\Translate\Repositories\WritePathRepositoryInterface;
@@ -45,7 +44,6 @@ readonly class Translator
         private WriteGroupRepositoryInterface $writeGroupRepository,
         private ReadTranslateRepositoryInterface $readTranslateRepository,
         private WriteTranslateRepositoryInterface $writeTranslateRepository,
-        private TransactionManagerInterface $transactionManagerInterface,
         private WriteGroupTranslateRepositoryInterface $writeGroupTranslateRepository,
         private ReadPathRepositoryInterface $readPathRepository,
         private WritePathRepositoryInterface $writePathRepository,
@@ -63,15 +61,15 @@ readonly class Translator
      */
     public function translateText(
         string $text,
-        string $toLanguage,
-        ?string $fromLanguage = null,
+        string $toLocale,
+        ?string $fromLocale = null,
         ?string $context = null,
     ): string {
         return $this->translateMessage(
             pattern: $this->parser->quote($text),
             values: [],
-            toLanguage: $toLanguage,
-            fromLanguage: $fromLanguage,
+            toLocale: $toLocale,
+            fromLocale: $fromLocale,
             context: $context,
         );
     }
@@ -80,25 +78,6 @@ readonly class Translator
      * @throws TranslateException
      */
     public function translateMessage(
-        string $pattern,
-        array $values,
-        string $toLanguage,
-        ?string $fromLanguage = null,
-        ?string $context = null,
-    ): string {
-        return $this->transactionManagerInterface->transactional(fn () => $this->transactionTranslateMessage(
-            pattern: $pattern,
-            values: $values,
-            toLocale: $toLanguage,
-            fromLocale: $fromLanguage,
-            context: $context,
-        ));
-    }
-
-    /**
-     * @throws TranslateException
-     */
-    private function transactionTranslateMessage(
         string $pattern,
         array $values,
         string $toLocale,
