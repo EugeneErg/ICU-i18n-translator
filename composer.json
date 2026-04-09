@@ -1,5 +1,5 @@
 {
-  "name": "euge-erg/icu-i18n-translator",
+  "name": "eugene-erg/icu-i18n-translator",
   "description": "Text translation using multiple neural network APIs",
   "type": "library",
   "license": "MIT",
