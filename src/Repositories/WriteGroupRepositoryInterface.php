@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Repositories;
+namespace EugeneErg\IcuI18nTranslator\Repositories;
 
-use EugeneErg\Translate\Entities\Group;
-use EugeneErg\Translate\ValueObjects\GroupId;
+use EugeneErg\IcuI18nTranslator\Entities\Group;
+use EugeneErg\IcuI18nTranslator\ValueObjects\GroupId;
 
 interface WriteGroupRepositoryInterface
 {

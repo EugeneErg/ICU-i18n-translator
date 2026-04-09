@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Clients\GoogleInformalTranslate\ValueObjects;
+namespace EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate\ValueObjects;
 
 final readonly class GoogleTranslateResponse
 {

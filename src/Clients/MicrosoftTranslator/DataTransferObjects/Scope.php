@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Clients\MicrosoftTranslator\DataTransferObjects;
+namespace EugeneErg\IcuI18nTranslator\Clients\MicrosoftTranslator\DataTransferObjects;
 
 enum Scope: string
 {

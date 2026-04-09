@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\DataTransferObjects;
+namespace EugeneErg\IcuI18nTranslator\DataTransferObjects;
 
 use EugeneErg\ICUMessageFormatParser\DataTransferObjects\Types;
 

@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Clients\MicrosoftTranslator\DataTransferObjects;
+namespace EugeneErg\IcuI18nTranslator\Clients\MicrosoftTranslator\DataTransferObjects;
 
-use EugeneErg\Translate\Clients\MicrosoftTranslator\ValueObjects\LanguageDirection;
+use EugeneErg\IcuI18nTranslator\Clients\MicrosoftTranslator\ValueObjects\LanguageDirection;
 
 final readonly class LanguageTranslation
 {

@@ -2,21 +2,21 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Clients\GoogleTranslate;
+namespace EugeneErg\IcuI18nTranslator\Clients\GoogleTranslate;
 
-use EugeneErg\Translate\Clients\Contracts\PsrClient;
-use EugeneErg\Translate\Clients\GoogleTranslate\DetectLanguage;
-use EugeneErg\Translate\Clients\GoogleTranslate\DetectLanguageResponse;
-use EugeneErg\Translate\Clients\GoogleTranslate\LocationModel;
-use EugeneErg\Translate\Clients\GoogleTranslate\LocationModelGlossary;
-use EugeneErg\Translate\Clients\GoogleTranslate\Romanization;
-use EugeneErg\Translate\Clients\GoogleTranslate\RomanizeTextResponse;
-use EugeneErg\Translate\Clients\GoogleTranslate\SupportedLanguage;
-use EugeneErg\Translate\Clients\GoogleTranslate\SupportedLanguages;
-use EugeneErg\Translate\Clients\GoogleTranslate\TranslateTextResponse;
-use EugeneErg\Translate\Clients\GoogleTranslate\Translation;
-use EugeneErg\Translate\Clients\GoogleTranslate\TransliterationConfig;
-use EugeneErg\Translate\Clients\GoogleTranslate\ValueObjects\MimeType;
+use EugeneErg\IcuI18nTranslator\Clients\Contracts\PsrClient;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleTranslate\DetectLanguage;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleTranslate\DetectLanguageResponse;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleTranslate\LocationModel;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleTranslate\LocationModelGlossary;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleTranslate\Romanization;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleTranslate\RomanizeTextResponse;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleTranslate\SupportedLanguage;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleTranslate\SupportedLanguages;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleTranslate\TranslateTextResponse;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleTranslate\Translation;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleTranslate\TransliterationConfig;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleTranslate\ValueObjects\MimeType;
 use Psr\Http\Message\ResponseInterface;
 
 readonly class Client

@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Clients\DeepL\Exceptions;
+namespace EugeneErg\IcuI18nTranslator\Clients\DeepL\Exceptions;
 
 use Throwable;
 

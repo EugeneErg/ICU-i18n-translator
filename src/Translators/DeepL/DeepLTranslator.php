@@ -2,14 +2,14 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Translators\DeepL;
+namespace EugeneErg\IcuI18nTranslator\Translators\DeepL;
 
-use EugeneErg\Translate\Clients\DeepL\Client;
-use EugeneErg\Translate\Clients\DeepL\Exceptions\DeepLClientExceptionInterface;
-use EugeneErg\Translate\Clients\DeepL\ValueObjects\LanguageType;
-use EugeneErg\Translate\Clients\DeepL\ValueObjects\TagHandling;
-use EugeneErg\Translate\Translators\Contracts\TranslatorInterface;
-use EugeneErg\Translate\Translators;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\Client;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\Exceptions\DeepLClientExceptionInterface;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\ValueObjects\LanguageType;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\ValueObjects\TagHandling;
+use EugeneErg\IcuI18nTranslator\Translators\Contracts\TranslatorInterface;
+use EugeneErg\IcuI18nTranslator\Translators;
 
 readonly class DeepLTranslator implements TranslatorInterface
 {

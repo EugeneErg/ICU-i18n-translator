@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Repositories;
+namespace EugeneErg\IcuI18nTranslator\Repositories;
 
-use EugeneErg\Translate\Entities\Path;
-use EugeneErg\Translate\ValueObjects\PathId;
+use EugeneErg\IcuI18nTranslator\Entities\Path;
+use EugeneErg\IcuI18nTranslator\ValueObjects\PathId;
 
 interface ReadPathRepositoryInterface
 {

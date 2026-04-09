@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Clients\Contracts;
+namespace EugeneErg\IcuI18nTranslator\Clients\Contracts;
 
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Message\ResponseInterface;

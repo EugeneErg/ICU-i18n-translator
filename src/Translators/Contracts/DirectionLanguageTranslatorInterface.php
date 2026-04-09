@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Translators\Contracts;
+namespace EugeneErg\IcuI18nTranslator\Translators\Contracts;
 
 interface DirectionLanguageTranslatorInterface extends TranslatorInterface
 {

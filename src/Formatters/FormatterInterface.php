@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Formatters;
+namespace EugeneErg\IcuI18nTranslator\Formatters;
 
-use EugeneErg\Translate\DataTransferObjects\FilePathContainer;
+use EugeneErg\IcuI18nTranslator\DataTransferObjects\FilePathContainer;
 
 interface FormatterInterface
 {

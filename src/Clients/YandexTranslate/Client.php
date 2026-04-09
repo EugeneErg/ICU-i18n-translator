@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Clients\YandexTranslate;
+namespace EugeneErg\IcuI18nTranslator\Clients\YandexTranslate;
 
 readonly class Client
 {

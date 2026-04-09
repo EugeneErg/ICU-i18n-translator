@@ -1,11 +1,11 @@
 {
-  "name": "euge-erg/translate",
+  "name": "euge-erg/icu-i18n-translator",
   "description": "Text translation using multiple neural network APIs",
   "type": "library",
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "EugeneErg\\Translate\\": "src/"
+      "EugeneErg\\IcuI18nTranslator\\": "src/"
     }
   },
   "require": {

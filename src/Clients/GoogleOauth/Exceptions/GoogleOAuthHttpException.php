@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Clients\GoogleOauth\Exceptions;
+namespace EugeneErg\IcuI18nTranslator\Clients\GoogleOauth\Exceptions;
 
 class GoogleOAuthHttpException extends GoogleOAuthException
 {

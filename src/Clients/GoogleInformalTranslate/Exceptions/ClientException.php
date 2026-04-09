@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Clients\GoogleInformalTranslate\Exceptions;
+namespace EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate\Exceptions;
 
 class ClientException extends Exception
 {

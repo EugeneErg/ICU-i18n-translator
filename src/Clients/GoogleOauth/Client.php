@@ -2,25 +2,25 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Clients\GoogleOauth;
+namespace EugeneErg\IcuI18nTranslator\Clients\GoogleOauth;
 
-use EugeneErg\Translate\Clients\Contracts\PsrClient;
-use EugeneErg\Translate\Clients\GoogleOauth\Exceptions\GoogleOAuthAccessDeniedException;
-use EugeneErg\Translate\Clients\GoogleOauth\Exceptions\GoogleOAuthAdminPolicyEnforcedException;
-use EugeneErg\Translate\Clients\GoogleOauth\Exceptions\GoogleOAuthClientException;
-use EugeneErg\Translate\Clients\GoogleOauth\Exceptions\GoogleOAuthDisabledClientException;
-use EugeneErg\Translate\Clients\GoogleOauth\Exceptions\GoogleOAuthException;
-use EugeneErg\Translate\Clients\GoogleOauth\Exceptions\GoogleOAuthHttpException;
-use EugeneErg\Translate\Clients\GoogleOauth\Exceptions\GoogleOAuthInvalidClientException;
-use EugeneErg\Translate\Clients\GoogleOauth\Exceptions\GoogleOAuthInvalidGrantException;
-use EugeneErg\Translate\Clients\GoogleOauth\Exceptions\GoogleOAuthInvalidScopeException;
-use EugeneErg\Translate\Clients\GoogleOauth\Exceptions\GoogleOAuthNetworkException;
-use EugeneErg\Translate\Clients\GoogleOauth\Exceptions\GoogleOAuthOrgInternalException;
-use EugeneErg\Translate\Clients\GoogleOauth\Exceptions\GoogleOAuthResponseJsonException;
-use EugeneErg\Translate\Clients\GoogleOauth\Exceptions\GoogleOAuthTimeoutException;
-use EugeneErg\Translate\Clients\GoogleOauth\Exceptions\GoogleOAuthUnauthorizedClientException;
-use EugeneErg\Translate\Clients\GoogleOauth\Exceptions\GoogleOAuthUnknownApiException;
-use EugeneErg\Translate\Clients\GoogleTranslate\DataTransferObjects\AuthorizingResponse;
+use EugeneErg\IcuI18nTranslator\Clients\Contracts\PsrClient;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleOauth\Exceptions\GoogleOAuthAccessDeniedException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleOauth\Exceptions\GoogleOAuthAdminPolicyEnforcedException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleOauth\Exceptions\GoogleOAuthClientException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleOauth\Exceptions\GoogleOAuthDisabledClientException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleOauth\Exceptions\GoogleOAuthException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleOauth\Exceptions\GoogleOAuthHttpException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleOauth\Exceptions\GoogleOAuthInvalidClientException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleOauth\Exceptions\GoogleOAuthInvalidGrantException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleOauth\Exceptions\GoogleOAuthInvalidScopeException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleOauth\Exceptions\GoogleOAuthNetworkException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleOauth\Exceptions\GoogleOAuthOrgInternalException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleOauth\Exceptions\GoogleOAuthResponseJsonException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleOauth\Exceptions\GoogleOAuthTimeoutException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleOauth\Exceptions\GoogleOAuthUnauthorizedClientException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleOauth\Exceptions\GoogleOAuthUnknownApiException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleTranslate\DataTransferObjects\AuthorizingResponse;
 use Firebase\JWT\JWT;
 use JsonException;
 use Psr\Http\Client\ClientExceptionInterface;

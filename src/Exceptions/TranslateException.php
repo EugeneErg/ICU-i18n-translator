@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Exceptions;
+namespace EugeneErg\IcuI18nTranslator\Exceptions;
 
 use Exception;
 

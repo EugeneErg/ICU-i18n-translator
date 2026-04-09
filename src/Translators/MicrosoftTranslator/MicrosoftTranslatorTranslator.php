@@ -2,15 +2,15 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Translators\MicrosoftTranslator;
+namespace EugeneErg\IcuI18nTranslator\Translators\MicrosoftTranslator;
 
-use EugeneErg\Translate\Clients\MicrosoftTranslator\Client;
-use EugeneErg\Translate\Clients\MicrosoftTranslator\TranslationText;
-use EugeneErg\Translate\Clients\MicrosoftTranslator\Exceptions\MicrosoftTranslatorExceptionInterface;
-use EugeneErg\Translate\Translators\Contracts\DetectLanguageTranslatorInterface;
-use EugeneErg\Translate\Translators\Contracts\TranslatorInterface;
-use EugeneErg\Translate\Translators\Contracts\TransliterationLanguageTranslatorInterface;
-use EugeneErg\Translate\Translators;
+use EugeneErg\IcuI18nTranslator\Clients\MicrosoftTranslator\Client;
+use EugeneErg\IcuI18nTranslator\Clients\MicrosoftTranslator\TranslationText;
+use EugeneErg\IcuI18nTranslator\Clients\MicrosoftTranslator\Exceptions\MicrosoftTranslatorExceptionInterface;
+use EugeneErg\IcuI18nTranslator\Translators\Contracts\DetectLanguageTranslatorInterface;
+use EugeneErg\IcuI18nTranslator\Translators\Contracts\TranslatorInterface;
+use EugeneErg\IcuI18nTranslator\Translators\Contracts\TransliterationLanguageTranslatorInterface;
+use EugeneErg\IcuI18nTranslator\Translators;
 use IntlChar;
 
 readonly class MicrosoftTranslatorTranslator implements

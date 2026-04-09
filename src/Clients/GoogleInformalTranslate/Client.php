@@ -2,22 +2,22 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Clients\GoogleInformalTranslate;
+namespace EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate;
 
-use EugeneErg\Translate\Clients\Contracts\PsrClient;
-use EugeneErg\Translate\Clients\GoogleInformalTranslate\Exceptions\ClientException;
-use EugeneErg\Translate\Clients\GoogleInformalTranslate\Exceptions\NetworkException;
-use EugeneErg\Translate\Clients\GoogleInformalTranslate\Exceptions\ResponseJsonException;
-use EugeneErg\Translate\Clients\GoogleInformalTranslate\Exceptions\TimeoutException;
-use EugeneErg\Translate\Clients\GoogleInformalTranslate\ValueObjects\Confidence;
-use EugeneErg\Translate\Clients\GoogleInformalTranslate\ValueObjects\GoogleTranslateResponse;
-use EugeneErg\Translate\Clients\GoogleInformalTranslate\ValueObjects\GoogleTranslateType;
-use EugeneErg\Translate\Clients\GoogleInformalTranslate\ValueObjects\Language;
-use EugeneErg\Translate\Clients\GoogleInformalTranslate\ValueObjects\Model;
-use EugeneErg\Translate\Clients\GoogleInformalTranslate\ValueObjects\QualityCheck;
-use EugeneErg\Translate\Clients\GoogleInformalTranslate\ValueObjects\SupportedLanguagesResponse;
-use EugeneErg\Translate\Clients\GoogleInformalTranslate\ValueObjects\Translate;
-use EugeneErg\Translate\Clients\GoogleInformalTranslate\ValueObjects\UnidentifiedField7;
+use EugeneErg\IcuI18nTranslator\Clients\Contracts\PsrClient;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate\Exceptions\ClientException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate\Exceptions\NetworkException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate\Exceptions\ResponseJsonException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate\Exceptions\TimeoutException;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate\ValueObjects\Confidence;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate\ValueObjects\GoogleTranslateResponse;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate\ValueObjects\GoogleTranslateType;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate\ValueObjects\Language;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate\ValueObjects\Model;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate\ValueObjects\QualityCheck;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate\ValueObjects\SupportedLanguagesResponse;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate\ValueObjects\Translate;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate\ValueObjects\UnidentifiedField7;
 use JsonException;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\NetworkExceptionInterface;

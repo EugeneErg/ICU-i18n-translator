@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\ValueObjects;
+namespace EugeneErg\IcuI18nTranslator\ValueObjects;
 
 final readonly class GroupId
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Formatters;
+namespace EugeneErg\IcuI18nTranslator\Formatters;
 
 readonly class AndroidFormatter implements FormatterInterface
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Clients\Contracts;
+namespace EugeneErg\IcuI18nTranslator\Clients\Contracts;
 
-use EugeneErg\Translate\Clients\Contracts\ClientInterface as BaseClientInterface;
+use EugeneErg\IcuI18nTranslator\Clients\Contracts\ClientInterface as BaseClientInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;

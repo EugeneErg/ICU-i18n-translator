@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\ValueObjects;
+namespace EugeneErg\IcuI18nTranslator\ValueObjects;
 
-use EugeneErg\Translate\DataTransferObjects\Variable;
+use EugeneErg\IcuI18nTranslator\DataTransferObjects\Variable;
 
 final readonly class Translate
 {

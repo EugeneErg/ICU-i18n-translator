@@ -2,37 +2,31 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate;
+namespace EugeneErg\IcuI18nTranslator;
 
 use EugeneErg\ICUMessageFormatParser\DataTransferObjects\Cases;
 use EugeneErg\ICUMessageFormatParser\DataTransferObjects\Contracts\ICUTypeMergeInterface;
 use EugeneErg\ICUMessageFormatParser\DataTransferObjects\Types;
 use EugeneErg\ICUMessageFormatParser\Parser;
 use EugeneErg\ICUMessageFormatParser\Variator;
-use EugeneErg\Translate\DataTransferObjects\FilePathContainer;
-use EugeneErg\Translate\DataTransferObjects\Variable;
-use EugeneErg\Translate\Entities\Path;
-use EugeneErg\Translate\Entities\Translate;
-use EugeneErg\Translate\Exceptions\TranslateException;
-use EugeneErg\Translate\Formatters\FormatterInterface;
-use EugeneErg\Translate\Repositories\ReadGroupRepositoryInterface;
-use EugeneErg\Translate\Repositories\ReadPathRepositoryInterface;
-use EugeneErg\Translate\Repositories\ReadTranslateRepositoryInterface;
-use EugeneErg\Translate\Repositories\WriteGroupRepositoryInterface;
-use EugeneErg\Translate\Repositories\WriteGroupTranslateRepositoryInterface;
-use EugeneErg\Translate\Repositories\WritePathRepositoryInterface;
-use EugeneErg\Translate\Repositories\WriteTranslateRepositoryInterface;
-use EugeneErg\Translate\Translators\Contracts\TranslatorInterface;
-use EugeneErg\Translate\ValueObjects\GroupId;
-use EugeneErg\Translate\ValueObjects\PathId;
+use EugeneErg\IcuI18nTranslator\DataTransferObjects\FilePathContainer;
+use EugeneErg\IcuI18nTranslator\DataTransferObjects\Variable;
+use EugeneErg\IcuI18nTranslator\Entities\Path;
+use EugeneErg\IcuI18nTranslator\Entities\Translate;
+use EugeneErg\IcuI18nTranslator\Exceptions\TranslateException;
+use EugeneErg\IcuI18nTranslator\Formatters\FormatterInterface;
+use EugeneErg\IcuI18nTranslator\Repositories\ReadGroupRepositoryInterface;
+use EugeneErg\IcuI18nTranslator\Repositories\ReadPathRepositoryInterface;
+use EugeneErg\IcuI18nTranslator\Repositories\ReadTranslateRepositoryInterface;
+use EugeneErg\IcuI18nTranslator\Repositories\WriteGroupRepositoryInterface;
+use EugeneErg\IcuI18nTranslator\Repositories\WriteGroupTranslateRepositoryInterface;
+use EugeneErg\IcuI18nTranslator\Repositories\WritePathRepositoryInterface;
+use EugeneErg\IcuI18nTranslator\Repositories\WriteTranslateRepositoryInterface;
+use EugeneErg\IcuI18nTranslator\Translators\Contracts\TranslatorInterface;
+use EugeneErg\IcuI18nTranslator\ValueObjects\GroupId;
+use EugeneErg\IcuI18nTranslator\ValueObjects\PathId;
 use MessageFormatter;
 
-/**
- * //todo три типа перевода:
- * //todo 1) перевод простого текста (например пользовательского сообщения от юзера к юзеру)
- * //todo 2) перевод icu message (например форматированная ошибка и т д)
- * //todo 3) перевод файла (файл будет отдаваться в различных фораматах на фронт или мобилку и т д)
- */
 readonly class Translator
 {
     /**

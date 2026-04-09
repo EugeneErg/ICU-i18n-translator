@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Entities;
+namespace EugeneErg\IcuI18nTranslator\Entities;
 
-use EugeneErg\Translate\ValueObjects\GroupId;
-use EugeneErg\Translate\ValueObjects\PathId;
+use EugeneErg\IcuI18nTranslator\ValueObjects\GroupId;
+use EugeneErg\IcuI18nTranslator\ValueObjects\PathId;
 
 final readonly class Path
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Clients\MicrosoftTranslator\Exceptions;
+namespace EugeneErg\IcuI18nTranslator\Clients\MicrosoftTranslator\Exceptions;
 
 class RequestException extends ClientException
 {

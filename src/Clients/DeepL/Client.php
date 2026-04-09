@@ -2,23 +2,23 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Clients\DeepL;
+namespace EugeneErg\IcuI18nTranslator\Clients\DeepL;
 
-use EugeneErg\Translate\Clients\Contracts\PsrClient;
-use EugeneErg\Translate\Clients\DeepL\Language;
-use EugeneErg\Translate\Clients\DeepL\Translation;
-use EugeneErg\Translate\Clients\DeepL\Exceptions\AuthorizationException;
-use EugeneErg\Translate\Clients\DeepL\Exceptions\ConnectionException;
-use EugeneErg\Translate\Clients\DeepL\Exceptions\DeepLClientExceptionInterface;
-use EugeneErg\Translate\Clients\DeepL\Exceptions\QuotaExceededException;
-use EugeneErg\Translate\Clients\DeepL\Exceptions\RequestException;
-use EugeneErg\Translate\Clients\DeepL\Exceptions\ResponseParsingException;
-use EugeneErg\Translate\Clients\DeepL\Exceptions\TooManyRequestsException;
-use EugeneErg\Translate\Clients\DeepL\ValueObjects\Formality;
-use EugeneErg\Translate\Clients\DeepL\ValueObjects\LanguageType;
-use EugeneErg\Translate\Clients\DeepL\ValueObjects\ModelType;
-use EugeneErg\Translate\Clients\DeepL\ValueObjects\SplitSentences;
-use EugeneErg\Translate\Clients\DeepL\ValueObjects\TagHandling;
+use EugeneErg\IcuI18nTranslator\Clients\Contracts\PsrClient;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\Language;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\Translation;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\Exceptions\AuthorizationException;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\Exceptions\ConnectionException;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\Exceptions\DeepLClientExceptionInterface;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\Exceptions\QuotaExceededException;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\Exceptions\RequestException;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\Exceptions\ResponseParsingException;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\Exceptions\TooManyRequestsException;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\ValueObjects\Formality;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\ValueObjects\LanguageType;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\ValueObjects\ModelType;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\ValueObjects\SplitSentences;
+use EugeneErg\IcuI18nTranslator\Clients\DeepL\ValueObjects\TagHandling;
 use JsonException;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Message\ResponseInterface;

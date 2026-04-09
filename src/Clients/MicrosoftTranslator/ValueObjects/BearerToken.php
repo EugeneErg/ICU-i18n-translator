@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Clients\MicrosoftTranslator\ValueObjects;
+namespace EugeneErg\IcuI18nTranslator\Clients\MicrosoftTranslator\ValueObjects;
 
 final readonly class BearerToken implements AuthorizationInterface
 {

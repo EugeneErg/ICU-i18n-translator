@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Clients\DeepL\ValueObjects;
+namespace EugeneErg\IcuI18nTranslator\Clients\DeepL\ValueObjects;
 
 enum LanguageType: string
 {

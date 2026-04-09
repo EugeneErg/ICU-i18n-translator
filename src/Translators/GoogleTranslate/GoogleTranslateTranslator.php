@@ -2,12 +2,12 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Translators\GoogleTranslate;
+namespace EugeneErg\IcuI18nTranslator\Translators\GoogleTranslate;
 
-use EugeneErg\Translate\Translators\Contracts\DetectLanguageTranslatorInterface;
-use EugeneErg\Translate\Translators\Contracts\TranslatorInterface;
-use EugeneErg\Translate\Translators\Contracts\TransliterationLanguageTranslatorInterface;
-use EugeneErg\Translate\Translators;
+use EugeneErg\IcuI18nTranslator\Translators\Contracts\DetectLanguageTranslatorInterface;
+use EugeneErg\IcuI18nTranslator\Translators\Contracts\TranslatorInterface;
+use EugeneErg\IcuI18nTranslator\Translators\Contracts\TransliterationLanguageTranslatorInterface;
+use EugeneErg\IcuI18nTranslator\Translators;
 
 readonly class GoogleTranslateTranslator implements
     TranslatorInterface,

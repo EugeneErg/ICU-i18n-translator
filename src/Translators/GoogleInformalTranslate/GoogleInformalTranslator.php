@@ -2,15 +2,15 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Translators\GoogleInformalTranslate;
+namespace EugeneErg\IcuI18nTranslator\Translators\GoogleInformalTranslate;
 
 use EugeneErg\ICUMessageFormatParser\Parser;
-use EugeneErg\Translate\Clients\GoogleInformalTranslate\Client;
-use EugeneErg\Translate\Clients\GoogleInformalTranslate\ValueObjects\GoogleTranslateType;
-use EugeneErg\Translate\DataTransferObjects\Variable;
-use EugeneErg\Translate\Translators\Contracts\TranslatorInterface;
-use EugeneErg\Translate\Translators;
-use EugeneErg\Translate\ValueObjects\Translated;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate\Client;
+use EugeneErg\IcuI18nTranslator\Clients\GoogleInformalTranslate\ValueObjects\GoogleTranslateType;
+use EugeneErg\IcuI18nTranslator\DataTransferObjects\Variable;
+use EugeneErg\IcuI18nTranslator\Translators\Contracts\TranslatorInterface;
+use EugeneErg\IcuI18nTranslator\Translators;
+use EugeneErg\IcuI18nTranslator\ValueObjects\Translated;
 use MessageFormatter;
 
 readonly class GoogleInformalTranslator implements TranslatorInterface

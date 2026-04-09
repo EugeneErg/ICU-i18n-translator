@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\Translate\Clients\GoogleTranslate\DataTransferObjects;
+namespace EugeneErg\IcuI18nTranslator\Clients\GoogleTranslate\DataTransferObjects;
 
 final readonly class Translation
 {
