@@ -4,16 +4,21 @@ declare(strict_types = 1);
 
 namespace EugeneErg\IcuI18nTranslator;
 
+use EugeneErg\IcuI18nTranslator\Exceptions\FileNotFoundException;
+use EugeneErg\IcuI18nTranslator\Exceptions\FormatNotFoundException;
+use EugeneErg\IcuI18nTranslator\Exceptions\GroupNotFoundException;
+use EugeneErg\IcuI18nTranslator\Exceptions\IncorrectTransferPatternException;
+use EugeneErg\IcuI18nTranslator\Exceptions\TranslatorExceptionInterface;
+use EugeneErg\IcuI18nTranslator\Exceptions\UnexpectedTranslateDirectionException;
+use EugeneErg\IcuI18nTranslator\ValueObjects\TranslateId;
 use EugeneErg\ICUMessageFormatParser\DataTransferObjects\Cases;
 use EugeneErg\ICUMessageFormatParser\DataTransferObjects\Contracts\ICUTypeMergeInterface;
 use EugeneErg\ICUMessageFormatParser\DataTransferObjects\Types;
 use EugeneErg\ICUMessageFormatParser\Parser;
-use EugeneErg\ICUMessageFormatParser\Variator;
 use EugeneErg\IcuI18nTranslator\DataTransferObjects\FilePathContainer;
 use EugeneErg\IcuI18nTranslator\DataTransferObjects\Variable;
 use EugeneErg\IcuI18nTranslator\Entities\Path;
 use EugeneErg\IcuI18nTranslator\Entities\Translate;
-use EugeneErg\IcuI18nTranslator\Exceptions\TranslateException;
 use EugeneErg\IcuI18nTranslator\Formatters\FormatterInterface;
 use EugeneErg\IcuI18nTranslator\Repositories\ReadGroupRepositoryInterface;
 use EugeneErg\IcuI18nTranslator\Repositories\ReadPathRepositoryInterface;
@@ -42,7 +47,6 @@ readonly class Translator
         private ReadPathRepositoryInterface $readPathRepository,
         private WritePathRepositoryInterface $writePathRepository,
         private Parser $parser,
-        private Variator $variator,
         private array $translators,
         private array $formatters,
     ) {
@@ -51,7 +55,7 @@ readonly class Translator
     /**
      * @description переводит пользовательский текст
      *
-     * @throws TranslateException
+     * @throws TranslatorExceptionInterface
      */
     public function translateText(
         string $text,
@@ -69,7 +73,7 @@ readonly class Translator
     }
 
     /**
-     * @throws TranslateException
+     * @throws TranslatorExceptionInterface
      */
     public function translateMessage(
         string $pattern,
@@ -79,7 +83,7 @@ readonly class Translator
         ?string $context = null,
     ): string {
         $types = $this->parser->parse($pattern);
-        $cases = $this->variator->typesToCases($types);
+        $cases = $this->parser->typesToCases($types);
         $key = $this->messageFormat(locale: $toLocale, pattern: (string) $cases->variator, values: $values);
         $groupOriginalPattern = (string) $types;
         $groupPattern = (string) $cases->variator;
@@ -155,12 +159,12 @@ readonly class Translator
     }
 
     /**
-     * @throws TranslateException
+     * @throws TranslatorExceptionInterface
      */
     public function addFile(string $format, string $name, string $content, string $locale, string $context = null): void
     {
         if (!isset($this->formatters[$format])) {
-            throw new TranslateException('Format not found.');
+            throw new FormatNotFoundException();
         }
 
         $file = $this->formatters[$format]->parse($content);
@@ -168,25 +172,136 @@ readonly class Translator
     }
 
     /**
-     * @throws TranslateException
+     * @throws TranslatorExceptionInterface
      */
     public function getFile(string $format, string $name, string $locale): string
     {
         if (!isset($this->formatters[$format])) {
-            throw new TranslateException('Format not found.');
+            throw new FormatNotFoundException();
         }
 
         $file = $this->loadFile($name, $locale);
 
         if ($file === null) {
-            throw new TranslateException('File not found.');
+            throw new FileNotFoundException();
         }
 
         return $this->formatters[$format]->format($file);
     }
 
+    public function getGroups(int $pageSize, int $page = 1): array
+    {
+        return $this->readGroupRepository->list(($page - 1) * $pageSize, $pageSize);
+    }
+
     /**
-     * @throws TranslateException
+     * @return array<string, DataTransferObjects\Translate>
+     *
+     * @throws TranslatorExceptionInterface
+     */
+    public function getTranslates(GroupId $groupId, string $locale): array
+    {
+        $group = $this->readGroupRepository->find($groupId);
+
+        if ($group === null) {
+            throw new GroupNotFoundException();
+        }
+
+        $translates = $this->readTranslateRepository->groupListByKey($groupId, $locale);
+        $types = $this->parser->parse($group->originalPattern);
+        $variants = $types->getAllVariants();
+        $result = [];
+
+        foreach ($variants as $key => $variant) {
+            $result[$key] = new DataTransferObjects\Translate(
+                cases: $variant->cases,
+                pattern: $translates[$key]->pattern ?? null,
+            );
+        }
+
+        return $result;
+    }
+
+    /**
+     * @throws TranslatorExceptionInterface
+     */
+    public function setTranslate(GroupId $groupId, string $key, string $locale, string $pattern): Translate
+    {
+        $types = $this->parser->parse($pattern);
+        $cases = $this->parser->typesToCases($types);
+
+        if (count($cases->types) !== 1) {
+            throw new IncorrectTransferPatternException();
+        }
+
+        $pattern = (string) $cases->types[0];
+        $newGroupTranslate = $this->readTranslateRepository->find($pattern, $locale)
+            ?? $this->writeTranslateRepository->create($pattern, $locale);
+        $this->writeGroupTranslateRepository->deleteByGroupId($groupId, $key, $locale);
+        $this->writeGroupTranslateRepository->create($groupId, $newGroupTranslate->id, $key);
+
+        return $newGroupTranslate;
+    }
+
+    public function deleteTranslateFromGroup(GroupId $groupId, string $key, string $locale): void
+    {
+        $this->writeGroupTranslateRepository->deleteByGroupId($groupId, $key, $locale);
+    }
+
+    public function deleteTranslate(TranslateId $translateId): void
+    {
+        $this->writeTranslateRepository->delete($translateId);
+    }
+
+    public function findFile(string $fileName): ?Path
+    {
+        return $this->readPathRepository->findRoot($fileName);
+    }
+
+    public function getFiles(int $pageSize, int $page = 1): array
+    {
+        return $this->readPathRepository->listRoot(offset: ($page - 1) * $pageSize, limit: $pageSize);
+    }
+
+    public function getFileBranch(PathId $parentId): array
+    {
+        return $this->readPathRepository->listByParentId($parentId);
+    }
+
+    public function createEmptyFile(string $fileName): PathId
+    {
+        return $this->writePathRepository->create($fileName)->id;
+    }
+
+    public function addFilePath(PathId $parentId, string $value): PathId
+    {
+        return $this->writePathRepository->create($value, $parentId)->id;
+    }
+
+    public function deleteFileBranch(PathId $pathId): void
+    {
+        $path = $this->readPathRepository->findById($pathId);
+
+        if ($path === null) {
+            return;
+        }
+
+        $this->deletePath($path);
+    }
+
+    private function deletePath(Path $path): void
+    {
+        $children = $this->readPathRepository->listByParentId($path->id);
+
+        foreach ($children as $child) {
+            $this->deletePath($child);
+        }
+
+        $this->writePathRepository->delete($path->id);
+    }
+
+    /**
+     * @throws TranslatorExceptionInterface
      */
     private function messageFormat(string $locale, string $pattern, array $values): string
     {
@@ -194,14 +309,14 @@ readonly class Translator
         $result = $messageFormater->format(values: $values);
 
         if ($result === false) {
-            throw new TranslateException(message: $messageFormater->getErrorMessage(), code: $messageFormater->getErrorCode());
+            throw new IncorrectTransferPatternException(message: $messageFormater->getErrorMessage(), code: $messageFormater->getErrorCode());
         }
 
         return $result;
     }
 
     /**
-     * @throws TranslateException
+     * @throws TranslatorExceptionInterface
      */
     private function translateMessageWithoutOriginalLanguage(
         string $originalPattern,
@@ -256,11 +371,11 @@ readonly class Translator
             return $this->messageFormat($toLocale, $translatedVariantPattern, $values);
         }
 
-        throw new TranslateException('Unexpected translate direction.');
+        throw new UnexpectedTranslateDirectionException();
     }
 
     /**
-     * @throws TranslateException
+     * @throws TranslatorExceptionInterface
      */
     private function translate(
         Types $variant,
@@ -298,11 +413,11 @@ readonly class Translator
             return $result;
         }
 
-        throw new TranslateException('Unexpected translate direction.');
+        throw new UnexpectedTranslateDirectionException();
     }
 
     /**
-     * @throws TranslateException
+     * @throws TranslatorExceptionInterface
      */
     private function prepare(Types $types, callable $translate): Types
     {
@@ -371,7 +486,7 @@ readonly class Translator
     }
 
     /**
-     * @throws TranslateException
+     * @throws TranslatorExceptionInterface
      */
     private function loadFile(string $name, string $locale): ?DataTransferObjects\FilePathContainer
     {
@@ -381,7 +496,7 @@ readonly class Translator
     }
 
     /**
-     * @throws TranslateException
+     * @throws TranslatorExceptionInterface
      */
     private function loadPath(Path $path, string $locale): Types|DataTransferObjects\FilePathContainer
     {
@@ -392,7 +507,7 @@ readonly class Translator
         $group = $this->readGroupRepository->find($path->groupId);
 
         if ($group === null) {
-            throw new TranslateException('Group not found.');
+            throw new GroupNotFoundException();
         }
 
         $types = $this->parser->parse($group->originalPattern);
@@ -401,7 +516,7 @@ readonly class Translator
             return $types;
         }
 
-        $cases = $this->variator->typesToCases($types);
+        $cases = $this->parser->typesToCases($types);
         $result = $this->readTranslateRepository->groupListByKey($group->id, $locale);
         $needKeys = array_diff(array_keys($cases->types), array_keys($result));
         $sources = $needKeys === []
@@ -437,14 +552,14 @@ readonly class Translator
             $translateVariants[$key] = $this->parser->parse($translate->pattern);
         }
 
-        return $this->variator->casesToTypes(new Cases(
+        return $this->parser->casesToTypes(new Cases(
             types: $translateVariants,
             variator: $cases->variator,
         ));
     }
 
     /**
-     * @throws TranslateException
+     * @throws TranslatorExceptionInterface
      */
     private function makeChildren(PathId $pathId, string $locale): DataTransferObjects\FilePathContainer
     {
@@ -471,7 +586,7 @@ readonly class Translator
             $group = $this->readGroupRepository->findByPattern(originalPattern: $patternString, context: $context, locale: $locale);
 
             if ($group === null) {
-                $cases = $this->variator->typesToCases($pattern);
+                $cases = $this->parser->typesToCases($pattern);
                 $groupPattern = (string) $cases->variator;
                 $group = $this->writeGroupRepository->create(
                     originalPattern: $patternString,

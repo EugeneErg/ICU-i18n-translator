@@ -11,4 +11,9 @@ interface ReadGroupRepositoryInterface
 {
     public function findByPattern(string $originalPattern, ?string $context, ?string $locale = null): ?Group;
     public function find(GroupId $id): ?Group;
+
+    /**
+     * @return Group[]
+     */
+    public function list(int $offset, int $limit): array;
 }

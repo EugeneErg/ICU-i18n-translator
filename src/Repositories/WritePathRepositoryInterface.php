@@ -15,4 +15,6 @@ interface WritePathRepositoryInterface
         ?PathId $parentId = null,
         ?GroupId $groupId = null,
     ): Path;
+
+    public function delete(PathId $id): void;
 }

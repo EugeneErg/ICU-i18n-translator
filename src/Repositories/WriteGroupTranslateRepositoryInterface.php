@@ -17,5 +17,5 @@ interface WriteGroupTranslateRepositoryInterface
         ?TranslateId $sourceId = null,
     ): GroupTranslate;
 
-    public function deleteByGroupId(GroupId $groupId): void;
+    public function deleteByGroupId(GroupId $groupId, ?string $key = null, ?string $locale = null): void;
 }

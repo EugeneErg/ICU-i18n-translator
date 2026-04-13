@@ -7,8 +7,8 @@ namespace EugeneErg\IcuI18nTranslator\DataTransferObjects;
 final readonly class Translate
 {
     public function __construct(
-        public string $template,
-        public array $variables,
+        public array $cases,
+        public ?string $pattern = null,
     ) {
     }
 }

@@ -14,7 +14,14 @@ interface ReadPathRepositoryInterface
     /**
      * @return Path[]
      */
+    public function listRoot(int $offset, int $limit): array;
+
+    /**
+     * @return Path[]
+     */
     public function listByParentId(PathId $parentId): array;
 
     public function findChild(string $value, PathId $parentId): ?Path;
+
+    public function findById(PathId $id): ?Path;
 }

@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 namespace EugeneErg\IcuI18nTranslator\Exceptions;
 
-use Exception;
+use Throwable;
 
-final class TranslateException extends Exception
+interface TranslatorExceptionInterface extends Throwable
 {
 }
