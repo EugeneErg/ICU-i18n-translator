@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\IcuI18nTranslator\Formatters;
+namespace EugeneErg\IcuI18nTranslator;
 
 use EugeneErg\IcuI18nTranslator\DataTransferObjects\FilePathContainer;
 

@@ -2,10 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace EugeneErg\IcuI18nTranslator\Translators\Contracts;
+namespace EugeneErg\IcuI18nTranslator;
 
 use EugeneErg\IcuI18nTranslator\DataTransferObjects\Variable;
-use EugeneErg\IcuI18nTranslator\Translators;
 use EugeneErg\IcuI18nTranslator\ValueObjects\Translated;
 
 interface TranslatorInterface
