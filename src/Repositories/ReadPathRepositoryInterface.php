@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace EugeneErg\IcuI18nTranslator\Repositories;
 
@@ -9,7 +9,7 @@ use EugeneErg\IcuI18nTranslator\ValueObjects\PathId;
 
 interface ReadPathRepositoryInterface
 {
-    public function findRoot(string $value): ?Path;
+    public function findRoot(string $value): Path|null;
 
     /**
      * @return Path[]
@@ -21,7 +21,7 @@ interface ReadPathRepositoryInterface
      */
     public function listByParentId(PathId $parentId): array;
 
-    public function findChild(string $value, PathId $parentId): ?Path;
+    public function findChild(string $value, PathId $parentId): Path|null;
 
-    public function findById(PathId $id): ?Path;
+    public function findById(PathId $id): Path|null;
 }

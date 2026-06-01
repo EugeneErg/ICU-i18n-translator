@@ -1,11 +1,10 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace EugeneErg\IcuI18nTranslator\Entities;
 
 use EugeneErg\IcuI18nTranslator\ValueObjects\GroupId;
-use EugeneErg\IcuI18nTranslator\ValueObjects\TranslateId;
 
 final readonly class Group
 {
@@ -14,30 +13,30 @@ final readonly class Group
         public string $originalPattern,
         public string $pattern,
         public string $locale,
-        public ?string $context = null,
+        public string|null $context = null,
     ) {
     }
 }
 
-//translate ( - собственно сам перевод, может переиспользоваться
+// translate ( - собственно сам перевод, может переиспользоваться
 //  id,
 //  pattern - переведенный паттерн сообщения,
 //  language - язык паттерна
-//)
-//group ( - группа, для набора связанных переводов
+// )
+// group ( - группа, для набора связанных переводов
 //  id,
 //  pattern - паттерн выбора перевода (может зависеть от количества, селекта и т д),
 //  context - контекст, использующийся для перевода
-//)
-//group_translates ( - наборы переводов, входящие в группу
+// )
+// group_translates ( - наборы переводов, входящие в группу
 //  group_id,
 //  translate_id,
 //  key - ключ паттерна группы, соответствующий переводу
 //  ?source_id - с какого translate перевели
-//)
-//path ( - составные части файла
+// )
+// path ( - составные части файла
 //  id,
 //  ?parent_id,
 //  ?group_id, - если есть, то нельзя иметь дочерние пути
 //  value - если нет parent_id - название файла, если есть - ключ в этом файле/ массиве
-//)
+// )

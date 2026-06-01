@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace EugeneErg\IcuI18nTranslator;
 
@@ -18,7 +18,7 @@ interface TranslatorInterface
         array $pattern,
         string $fromLocale,
         string $toLocale,
-        ?string $context = null,
+        string|null $context = null,
     ): array;
 
     /**
@@ -27,8 +27,8 @@ interface TranslatorInterface
     public function translateWithDetect(
         array $pattern,
         string $toLocale,
-        ?string $context = null,
+        string|null $context = null,
     ): Translated;
 
-    public function canTranslate(string $toLocale, ?string $fromLocale = null): bool;
+    public function canTranslate(string $toLocale, string|null $fromLocale = null): bool;
 }

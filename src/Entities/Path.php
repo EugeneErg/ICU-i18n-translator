@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace EugeneErg\IcuI18nTranslator\Entities;
 
@@ -12,8 +12,8 @@ final readonly class Path
     public function __construct(
         public PathId $id,
         public string $value,
-        public ?PathId $parentId = null,
-        public ?GroupId $groupId = null,
+        public PathId|null $parentId = null,
+        public GroupId|null $groupId = null,
     ) {
     }
 }

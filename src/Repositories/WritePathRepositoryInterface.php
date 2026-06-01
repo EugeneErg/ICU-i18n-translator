@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace EugeneErg\IcuI18nTranslator\Repositories;
 
@@ -12,8 +12,8 @@ interface WritePathRepositoryInterface
 {
     public function create(
         string $value,
-        ?PathId $parentId = null,
-        ?GroupId $groupId = null,
+        PathId|null $parentId = null,
+        GroupId|null $groupId = null,
     ): Path;
 
     public function delete(PathId $id): void;

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace EugeneErg\IcuI18nTranslator;
 
@@ -30,6 +30,8 @@ use EugeneErg\ICUMessageFormatParser\DataTransferObjects\Types;
 use EugeneErg\ICUMessageFormatParser\Parser;
 use MessageFormatter;
 
+use function count;
+
 readonly class Translator
 {
     /**
@@ -58,8 +60,8 @@ readonly class Translator
     public function translateText(
         string $text,
         string $toLocale,
-        ?string $fromLocale = null,
-        ?string $context = null,
+        string|null $fromLocale = null,
+        string|null $context = null,
     ): string {
         return $this->translateMessage(
             pattern: $this->parser->quote($text),
@@ -77,8 +79,8 @@ readonly class Translator
         string $pattern,
         array $values,
         string $toLocale,
-        ?string $fromLocale = null,
-        ?string $context = null,
+        string|null $fromLocale = null,
+        string|null $context = null,
     ): string {
         $types = $this->parser->parse($pattern);
         $cases = $this->parser->typesToCases($types);
@@ -86,17 +88,17 @@ readonly class Translator
         $groupOriginalPattern = (string) $types;
         $groupPattern = (string) $cases->variator;
         $group = $this->readGroupRepository->findByPattern(originalPattern: $groupOriginalPattern, context: $context, locale: $fromLocale);
-        //если группа найдена, а исходный язык не задан, берем из группы
+        // если группа найдена, а исходный язык не задан, берем из группы
         $fromLocale ??= $group->locale ?? null;
         $variant = $cases->types[$key];
         $variantPattern = (string) $variant;
 
-        //если исходный язык неизвестен, значит и группа не найдена
+        // если исходный язык неизвестен, значит и группа не найдена
         if ($fromLocale === null) {
             $sourceTranslate = $this->readTranslateRepository->find(pattern: $variantPattern);
 
             if ($sourceTranslate === null) {
-                //если в базе нет такой строки, значит исходный язык можем узнать только из внешних сервисов. Там и переведем
+                // если в базе нет такой строки, значит исходный язык можем узнать только из внешних сервисов. Там и переведем
                 return $this->translateMessageWithoutOriginalLanguage(
                     originalPattern: $groupOriginalPattern,
                     groupPattern: $groupPattern,
@@ -109,11 +111,11 @@ readonly class Translator
                 );
             }
 
-            //если в базе есть такая строка, берем из неё исходный язык
+            // если в базе есть такая строка, берем из неё исходный язык
             $fromLocale = $sourceTranslate->locale;
             $originalGroupTranslateIsEmpty = true;
         } elseif ($group !== null) {
-            //если исходный язык задан и есть группа, то возможно есть и перевод
+            // если исходный язык задан и есть группа, то возможно есть и перевод
             $result = $this->readTranslateRepository->findByGroup(groupId: $group->id, key: $key, locale: $toLocale);
 
             if ($result !== null) {
@@ -159,7 +161,7 @@ readonly class Translator
     /**
      * @throws TranslatorExceptionInterface
      */
-    public function addFile(string $format, string $name, string $content, string $locale, string $context = null): void
+    public function addFile(string $format, string $name, string $content, string $locale, string|null $context = null): void
     {
         if (!isset($this->formatters[$format])) {
             throw new FormatNotFoundException();
@@ -251,7 +253,7 @@ readonly class Translator
         $this->writeTranslateRepository->delete($translateId);
     }
 
-    public function findFile(string $fileName): ?Path
+    public function findFile(string $fileName): Path|null
     {
         return $this->readPathRepository->findRoot($fileName);
     }
@@ -319,7 +321,7 @@ readonly class Translator
     private function translateMessageWithoutOriginalLanguage(
         string $originalPattern,
         string $groupPattern,
-        ?string $context,
+        string|null $context,
         Types $variant,
         string $variantPattern,
         array $values,
@@ -331,7 +333,7 @@ readonly class Translator
                 continue;
             }
 
-            $translatedVariant = $this->prepare($variant, function (array $pattern) use (
+            $translatedVariant = $this->prepare($variant, static function (array $pattern) use (
                 $translator,
                 &$fromLocale,
                 $context,
@@ -380,16 +382,16 @@ readonly class Translator
         string $fromLocale,
         string $toLocale,
         string $key,
-        ?string $context,
+        string|null $context,
         GroupId $groupId,
-        ValueObjects\TranslateId $sourceId,
+        TranslateId $sourceId,
     ): Translate {
         foreach ($this->translators as $translator) {
             if (!$translator->canTranslate($toLocale, $fromLocale)) {
                 continue;
             }
 
-            $translatedVariant = $this->prepare($variant, fn (array $pattern) => $translator->translate(
+            $translatedVariant = $this->prepare($variant, static fn (array $pattern) => $translator->translate(
                 pattern: $pattern,
                 fromLocale: $fromLocale,
                 toLocale: $toLocale,
@@ -435,7 +437,7 @@ readonly class Translator
 
                 $stringAndVariables[] = new Variable($i);
                 $variableTypes[$i] = $type;
-                $i++;
+                ++$i;
             }
         }
 
@@ -458,11 +460,11 @@ readonly class Translator
     }
 
     private function saveFile(
-        DataTransferObjects\FilePathContainer $file,
+        FilePathContainer $file,
         string $name,
         string $locale,
-        ?string $context,
-        ?PathId $parentId = null,
+        string|null $context,
+        PathId|null $parentId = null,
     ): void {
         $path = $parentId === null
             ? $this->readPathRepository->findRoot($name)
@@ -486,7 +488,7 @@ readonly class Translator
     /**
      * @throws TranslatorExceptionInterface
      */
-    private function loadFile(string $name, string $locale): ?DataTransferObjects\FilePathContainer
+    private function loadFile(string $name, string $locale): FilePathContainer|null
     {
         $path = $this->readPathRepository->findRoot($name);
 
@@ -496,7 +498,7 @@ readonly class Translator
     /**
      * @throws TranslatorExceptionInterface
      */
-    private function loadPath(Path $path, string $locale): Types|DataTransferObjects\FilePathContainer
+    private function loadPath(Path $path, string $locale): Types|FilePathContainer
     {
         if ($path->groupId === null) {
             return $this->makeChildren($path->id, $locale);
@@ -559,7 +561,7 @@ readonly class Translator
     /**
      * @throws TranslatorExceptionInterface
      */
-    private function makeChildren(PathId $pathId, string $locale): DataTransferObjects\FilePathContainer
+    private function makeChildren(PathId $pathId, string $locale): FilePathContainer
     {
         $children = [];
         $paths = $this->readPathRepository->listByParentId($pathId);
@@ -568,10 +570,10 @@ readonly class Translator
             $children[$path->value] = $this->loadPath($path, $locale);
         }
 
-        return new DataTransferObjects\FilePathContainer(children: $children);
+        return new FilePathContainer(children: $children);
     }
 
-    private function saveGroup(Types $pattern, string $name, string $locale, ?string $context, PathId $parentId): void
+    private function saveGroup(Types $pattern, string $name, string $locale, string|null $context, PathId $parentId): void
     {
         $path = $this->readPathRepository->findChild($name, $parentId);
 

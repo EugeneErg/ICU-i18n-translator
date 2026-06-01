@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace EugeneErg\IcuI18nTranslator\Repositories;
 
@@ -14,8 +14,8 @@ interface WriteGroupTranslateRepositoryInterface
         GroupId $groupId,
         TranslateId $translateId,
         string $key,
-        ?TranslateId $sourceId = null,
+        TranslateId|null $sourceId = null,
     ): GroupTranslate;
 
-    public function deleteByGroupId(GroupId $groupId, ?string $key = null, ?string $locale = null): void;
+    public function deleteByGroupId(GroupId $groupId, string|null $key = null, string|null $locale = null): void;
 }

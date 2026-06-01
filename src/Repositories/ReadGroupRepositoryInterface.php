@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace EugeneErg\IcuI18nTranslator\Repositories;
 
@@ -9,8 +9,9 @@ use EugeneErg\IcuI18nTranslator\ValueObjects\GroupId;
 
 interface ReadGroupRepositoryInterface
 {
-    public function findByPattern(string $originalPattern, ?string $context, ?string $locale = null): ?Group;
-    public function find(GroupId $id): ?Group;
+    public function findByPattern(string $originalPattern, string|null $context, string|null $locale = null): Group|null;
+
+    public function find(GroupId $id): Group|null;
 
     /**
      * @return Group[]

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace EugeneErg\IcuI18nTranslator\ValueObjects;
 
@@ -8,10 +8,12 @@ use EugeneErg\IcuI18nTranslator\DataTransferObjects\Variable;
 
 final readonly class Translate
 {
-    /** @var array<string|Variable> */
+    /**
+     * @var array<string|Variable>
+     */
     public array $value;
 
-    public function __construct(public ?array $replaced = [], string|Variable ...$value)
+    public function __construct(public array|null $replaced = [], string|Variable ...$value)
     {
     }
 

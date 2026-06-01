@@ -19,6 +19,9 @@
   },
   "minimum-stability": "stable",
   "require-dev": {
-    "guzzlehttp/guzzle": "^7.9"
+    "guzzlehttp/guzzle": "^7.9",
+    "phpstan/phpstan": "^2.2",
+    "friendsofphp/php-cs-fixer": "^3.95",
+    "phpunit/phpunit": "^12.5"
   }
 }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace EugeneErg\IcuI18nTranslator\Entities;
 
@@ -13,7 +13,7 @@ final readonly class GroupTranslate
         public GroupId $groupId,
         public TranslateId $translateId,
         public string $key,
-        public ?TranslateId $sourceId,
+        public TranslateId|null $sourceId,
     ) {
     }
 }
