@@ -6,6 +6,7 @@ namespace EugeneErg\IcuI18nTranslator;
 
 use EugeneErg\IcuI18nTranslator\DataTransferObjects\FilePathContainer;
 use EugeneErg\IcuI18nTranslator\DataTransferObjects\Variable;
+use EugeneErg\IcuI18nTranslator\Entities\Group;
 use EugeneErg\IcuI18nTranslator\Entities\Path;
 use EugeneErg\IcuI18nTranslator\Entities\Translate;
 use EugeneErg\IcuI18nTranslator\Exceptions\FileNotFoundException;
@@ -25,6 +26,7 @@ use EugeneErg\IcuI18nTranslator\ValueObjects\GroupId;
 use EugeneErg\IcuI18nTranslator\ValueObjects\PathId;
 use EugeneErg\IcuI18nTranslator\ValueObjects\TranslateId;
 use EugeneErg\ICUMessageFormatParser\DataTransferObjects\Cases;
+use EugeneErg\ICUMessageFormatParser\DataTransferObjects\Contracts\ICUTypeInterface;
 use EugeneErg\ICUMessageFormatParser\DataTransferObjects\Contracts\ICUTypeMergeInterface;
 use EugeneErg\ICUMessageFormatParser\DataTransferObjects\Types;
 use EugeneErg\ICUMessageFormatParser\Parser;
@@ -73,6 +75,8 @@ readonly class Translator
     }
 
     /**
+     * @param array<string, scalar> $values
+     *
      * @throws TranslatorExceptionInterface
      */
     public function translateMessage(
@@ -189,6 +193,9 @@ readonly class Translator
         return $this->formatters[$format]->format($file);
     }
 
+    /**
+     * @return Group[]
+     */
     public function getGroups(int $pageSize, int $page = 1): array
     {
         return $this->readGroupRepository->list(($page - 1) * $pageSize, $pageSize);
@@ -213,7 +220,7 @@ readonly class Translator
         $result = [];
 
         foreach ($variants as $key => $variant) {
-            $result[$key] = new DataTransferObjects\Translate(
+            $result[(string) $key] = new DataTransferObjects\Translate(
                 cases: $variant->cases,
                 pattern: $translates[$key]->pattern ?? null,
             );
@@ -258,11 +265,17 @@ readonly class Translator
         return $this->readPathRepository->findRoot($fileName);
     }
 
+    /**
+     * @return Path[]
+     */
     public function getFiles(int $pageSize, int $page = 1): array
     {
         return $this->readPathRepository->listRoot(offset: ($page - 1) * $pageSize, limit: $pageSize);
     }
 
+    /**
+     * @return Path[]
+     */
     public function getFileBranch(PathId $parentId): array
     {
         return $this->readPathRepository->listByParentId($parentId);
@@ -301,6 +314,8 @@ readonly class Translator
     }
 
     /**
+     * @param array<string, scalar> $values
+     *
      * @throws TranslatorExceptionInterface
      */
     private function messageFormat(string $locale, string $pattern, array $values): string
@@ -316,6 +331,8 @@ readonly class Translator
     }
 
     /**
+     * @param array<string, scalar> $values
+     *
      * @throws TranslatorExceptionInterface
      */
     private function translateMessageWithoutOriginalLanguage(
@@ -348,6 +365,8 @@ readonly class Translator
 
                 return $result->pattern;
             });
+
+            /** @var string $fromLocale */
             $group = $this->writeGroupRepository->create(
                 originalPattern: $originalPattern,
                 pattern: $groupPattern,
@@ -417,16 +436,19 @@ readonly class Translator
     }
 
     /**
+     * @param callable(array<string|Variable> $patterns): array<string|Variable> $translate
+     *
      * @throws TranslatorExceptionInterface
      */
     private function prepare(Types $types, callable $translate): Types
     {
         $stringAndVariables = [];
         $text = '';
+        /** @var ICUTypeInterface[] $variableTypes */
         $variableTypes = [];
         $i = 0;
 
-        foreach ($types as $type) {
+        foreach ($types->types as $type) {
             if ($type instanceof ICUTypeMergeInterface) {
                 $text .= $this->messageFormat('EN', (string) $type, []);
             } else {
@@ -446,6 +468,7 @@ readonly class Translator
         }
 
         $stringAndVariables = $translate($stringAndVariables);
+        /** @var ICUTypeInterface[] $result */
         $result = [];
 
         foreach ($stringAndVariables as $item) {
