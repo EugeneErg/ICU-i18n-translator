@@ -444,6 +444,7 @@ readonly class Translator
     {
         $stringAndVariables = [];
         $text = '';
+
         /** @var ICUTypeInterface[] $variableTypes */
         $variableTypes = [];
         $i = 0;
@@ -468,6 +469,7 @@ readonly class Translator
         }
 
         $stringAndVariables = $translate($stringAndVariables);
+
         /** @var ICUTypeInterface[] $result */
         $result = [];
 
