@@ -373,7 +373,7 @@ readonly class Translator
                 context: $context,
                 locale: $fromLocale,
             );
-            $sourceTranslate = $this->writeTranslateRepository->create(pattern: $variantPattern, locale: $toLocale);
+            $sourceTranslate = $this->writeTranslateRepository->create(pattern: $variantPattern, locale: $fromLocale);
             $translatedVariantPattern = (string) $translatedVariant;
             $translate = $this->readTranslateRepository->find(pattern: $translatedVariantPattern, locale: $toLocale)
                 ?? $this->writeTranslateRepository->create(
@@ -604,6 +604,7 @@ readonly class Translator
 
         if ($path !== null && $path->groupId === null) {
             $this->deleteBranch($path->id);
+            $path = null;
         }
 
         if ($path === null) {
@@ -639,6 +640,7 @@ readonly class Translator
             }
 
             $this->deleteBranch($child->id);
+            $this->writePathRepository->delete($child->id);
         }
     }
 
