@@ -680,13 +680,12 @@ final class TranslatorTest extends TestCase
         $ext = $this->createStub(TranslatorInterface::class);
         $ext->method('canTranslate')->willReturn(true);
         $ext->method('translateWithDetect')->willReturnCallback(
-            static fn (array $p): Translated => new Translated(
-                $detectedLocale,
-                array_map(
-                    static fn (string|Variable $x): string|Variable => is_string($x) ? $translatedPat : $x,
-                    $p,
-                ),
-            ),
+            static function (array $p) use ($translatedPat): Translated {
+                /** @var array<string|Variable> $pattern */
+                $pattern = array_map(static fn (mixed $x): mixed => is_string($x) ? $translatedPat : $x, $p);
+
+                return new Translated('en', $pattern);
+            },
         );
 
         $result = $this->makeTranslator($s, $ext)->translateText($sourcePattern, $toLocale);
