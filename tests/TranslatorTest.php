@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use EugeneErg\IcuI18nTranslator\DataTransferObjects\FilePathContainer;
 use EugeneErg\IcuI18nTranslator\DataTransferObjects\Variable;
 use EugeneErg\IcuI18nTranslator\Entities\Group;
 use EugeneErg\IcuI18nTranslator\Entities\GroupTranslate;
@@ -617,6 +618,187 @@ final class TranslatorTest extends TestCase
             'fr',
             '{count, plural, one {# item} other {# items}}',
         );
+    }
+
+    // =========================================================================
+    // Regression tests for fixed bugs
+    // =========================================================================
+
+    // -------------------------------------------------------------------------
+    // Bug 1: sourceTranslate stored with $toLocale instead of detected $fromLocale
+    // -------------------------------------------------------------------------
+
+    /**
+     * When translateWithDetect detects locale='en' and target is 'de',
+     * the sourceTranslate record must be written with locale='en', not 'de'.
+     *
+     * Buggy:  ->create(pattern: $variantPattern, locale: $toLocale)
+     * Fixed:  ->create(pattern: $variantPattern, locale: $fromLocale)
+     */
+    #[Test]
+    public function translateTextWithDetectStoresSourceTranslateWithDetectedLocale(): void
+    {
+        $s = $this->stubs();
+        $s['readGroup']->method('findByPattern')->willReturn(null);
+        $s['readTranslate']->method('find')->willReturn(null);
+
+        $detectedLocale = 'en';
+        $toLocale = 'de';
+        $sourcePattern = 'Hello world';
+        $translatedPat = 'Hallo Welt';
+
+        $group = $this->makeGroup(locale: $detectedLocale);
+        $targetTranslate = $this->makeTranslate(id: 'tgt', pattern: $translatedPat, locale: $toLocale);
+
+        $s['writeGroup']->method('create')->willReturn($group);
+        $s['writeGroupTranslate']->method('create')->willReturn($this->makeGroupTranslate());
+
+        /** @var MockObject&WriteTranslateRepositoryInterface $mockWT */
+        $mockWT = $this->createMock(WriteTranslateRepositoryInterface::class);
+        $mockWT->expects($this->exactly(2))->method('create')
+            ->willReturnCallback(function (
+                string $pattern,
+                string $locale,
+            ) use ($detectedLocale, $toLocale, $sourcePattern, $targetTranslate): Translate {
+                if ($pattern === $sourcePattern) {
+                    // Bug: locale would be $toLocale='de'; fix: must be $detectedLocale='en'
+                    self::assertSame(
+                        $detectedLocale,
+                        $locale,
+                        'sourceTranslate must be stored with the detected fromLocale, not toLocale',
+                    );
+
+                    return $this->makeTranslate(id: 'src', pattern: $pattern, locale: $locale);
+                }
+
+                self::assertSame($toLocale, $locale);
+
+                return $targetTranslate;
+            });
+        $s['writeTranslate'] = $mockWT;
+
+        $ext = $this->createStub(TranslatorInterface::class);
+        $ext->method('canTranslate')->willReturn(true);
+        $ext->method('translateWithDetect')->willReturnCallback(
+            static fn (array $p): Translated => new Translated(
+                $detectedLocale,
+                array_map(
+                    static fn (string|Variable $x): string|Variable => is_string($x) ? $translatedPat : $x,
+                    $p,
+                ),
+            ),
+        );
+
+        $result = $this->makeTranslator($s, $ext)->translateText($sourcePattern, $toLocale);
+
+        $this->assertSame($translatedPat, $result);
+    }
+
+    // -------------------------------------------------------------------------
+    // Bug 2: deleteBranch (called from saveGroup) does not delete child path records
+    // -------------------------------------------------------------------------
+
+    /**
+     * When addFile replaces a directory-path node (groupId=null) with a leaf,
+     * deleteBranch is called to clean up its subtree.
+     * Every child path in that subtree must have writePathRepository->delete() called.
+     *
+     * Buggy:  deleteBranch() recurses and calls deleteGroup() but never deletes path rows
+     * Fixed:  $this->writePathRepository->delete($child->id) added inside the loop
+     */
+    #[Test]
+    public function saveGroupViaDeletBranchDeletesChildPathRecords(): void
+    {
+        $s = $this->stubs();
+
+        $rootPath = $this->makePath('p1', 'messages');
+        $dirPath = $this->makePath('p2', 'greeting', 'p1');        // groupId=null → deleteBranch triggered
+        $childOfDir = $this->makePath('p3', 'sub', 'p2', 'g_old');   // must be deleted by deleteBranch
+        $newGroup = $this->makeGroup('g_new', 'Bonjour', '0', 'fr');
+        $newPath = $this->makePath('p4', 'greeting', 'p1', 'g_new');
+
+        $s['readPath']->method('findRoot')->willReturn($rootPath);
+        $s['readPath']->method('findChild')->willReturn($dirPath);
+        $s['readPath']->method('listByParentId')->willReturnCallback(
+            static fn (PathId $id): array => $id->value === 'p2' ? [$childOfDir] : [],
+        );
+        $s['readGroup']->method('findByPattern')->willReturn(null);
+        $s['writeGroup']->method('create')->willReturn($newGroup);
+
+        $deletedIds = [];
+        $writePath = $this->createStub(WritePathRepositoryInterface::class);
+        $writePath->method('delete')->willReturnCallback(
+            static function (PathId $id) use (&$deletedIds): void {
+                $deletedIds[] = $id->value;
+            },
+        );
+        $writePath->method('create')->willReturn($newPath);
+        $s['writePath'] = $writePath;
+
+        $formatter = $this->createStub(FormatterInterface::class);
+        $formatter->method('parse')->willReturn(
+            new FilePathContainer(
+                children: ['greeting' => 'Bonjour'],
+            ),
+        );
+
+        $this->makeTranslator($s, formatter: $formatter)
+            ->addFile('json', 'messages', '{"greeting":"Bonjour"}', 'fr');
+
+        // child path p3 must have been deleted — bug: it was never deleted
+        $this->assertContains('p3', $deletedIds, 'deleteBranch must delete child path records');
+    }
+
+    // -------------------------------------------------------------------------
+    // Bug 3: saveGroup — $path not reset after deleteBranch, new group never created
+    // -------------------------------------------------------------------------
+
+    /**
+     * When addFile writes to a key that currently maps to a directory path (groupId=null),
+     * deleteBranch cleans up the subtree. After the fix $path is set to null, so the
+     * `if ($path === null)` block runs and creates the new group+path.
+     *
+     * Buggy:  $path stays non-null after deleteBranch → `if ($path === null)` is skipped →
+     *         no new group or path ever created (silent no-op)
+     * Fixed:  $path = null after deleteBranch
+     */
+    #[Test]
+    public function addFileCreatesGroupWhenDirectoryPathIsReplaced(): void
+    {
+        $s = $this->stubs();
+
+        $rootPath = $this->makePath('p1', 'messages');
+        // Existing path is a directory (groupId = null) → condition fires, deleteBranch runs
+        $dirPath = $this->makePath('p2', 'greeting', 'p1'); // no groupId
+        $newGroup = $this->makeGroup('g_new', 'Bonjour', '0', 'fr');
+        $newPath = $this->makePath('p3', 'greeting', 'p1', 'g_new');
+
+        $s['readPath']->method('findRoot')->willReturn($rootPath);
+        $s['readPath']->method('findChild')->willReturn($dirPath);
+        $s['readPath']->method('listByParentId')->willReturn([]);
+        $s['readGroup']->method('findByPattern')->willReturn(null);
+
+        /** @var MockObject&WriteGroupRepositoryInterface $mockWG */
+        $mockWG = $this->createMock(WriteGroupRepositoryInterface::class);
+        // A new group MUST be created — bug: never reached because $path stays non-null
+        $mockWG->expects($this->once())->method('create')->willReturn($newGroup);
+        $s['writeGroup'] = $mockWG;
+
+        /** @var MockObject&WritePathRepositoryInterface $mockWP */
+        $mockWP = $this->createMock(WritePathRepositoryInterface::class);
+        // A new path MUST be created — bug: never reached
+        $mockWP->expects($this->once())->method('create')->willReturn($newPath);
+        $s['writePath'] = $mockWP;
+
+        $formatter = $this->createStub(FormatterInterface::class);
+        $formatter->method('parse')->willReturn(
+            new FilePathContainer(
+                children: ['greeting' => 'Bonjour'],
+            ),
+        );
+
+        $this->makeTranslator($s, formatter: $formatter)
+            ->addFile('json', 'messages', '{"greeting":"Bonjour"}', 'fr');
     }
 
     // -------------------------------------------------------------------------
