@@ -139,7 +139,8 @@ readonly class Translator
             context: $context,
             locale: $fromLocale,
         );
-        $sourceTranslate ??= $this->writeTranslateRepository->create(pattern: $variantPattern, locale: $fromLocale);
+        $sourceTranslate ??= $this->readTranslateRepository->find(pattern: $variantPattern, locale: $fromLocale)
+            ?? $this->writeTranslateRepository->create(pattern: $variantPattern, locale: $fromLocale);
 
         if ($originalGroupTranslateIsEmpty) {
             $this->writeGroupTranslateRepository->create(
